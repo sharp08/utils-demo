@@ -5,7 +5,12 @@
       <div class="content-v left">
         <h3>方法列表</h3>
         <ul class="list-wrap">
-          <li :key="item" @click="click(item)" v-for="(item,idx) in utilsList">{{item}}</li>
+          <li
+            :class="{lightblue:curFnName===item}"
+            :key="item"
+            @click="click(item)"
+            v-for="item in utilsList"
+          >{{item}}</li>
         </ul>
       </div>
       <div class="content-v right">
@@ -23,38 +28,46 @@
 </template>
 
 <script>
-import HelloWorld from "@/components/HelloWorld.vue"
 import Mock from "mockjs"
 
 export default {
   name: "home",
-  components: {
-    HelloWorld
-  },
   data() {
     return {
       utilsList: Object.keys(ktools), //  工具方法名列表
       desc: "", //  方法描述
-      dispatchStr: "" //  调用区展示
+      dispatchStr: "", //  调用区展示
+      curFnName: "" //  当前方法名
     }
   },
   beforeCreate() {
-    window.ktools = ktools
+    window.ktools = ktools //  使开发者工具上可以使用 ktools
   },
   mounted() {},
   methods: {
     click(name) {
-      switch (name) {
-        case "fmtDeepClone":
-          this.fmtDeepCloneDemo("fmtDeepClone")
-          break
-        case "fmtDate":
-          this.fmtDateDemo("fmtDate")
-          break
-      }
+      this.curFnName = name
+      this[name](name)
     },
-    //  时间格式化
-    fmtDateDemo(name) {
+    //  类型检查  *****************************************************************************************************************
+    getType(name) {
+      let a = ["strrr", 1, true, null, undefined, {}, []]
+      console.group(name)
+      console.log(`原始数据：`, ...a)
+      this.desc = `ktools.getType(any)；返回类型值`
+      this.dispatchStr = `let a = ["a", 1, true, null, undefined, {}, []]
+let b = a.map(item => {
+      return ktools.getType(item)
+})
+console.log(...b)`
+      let b = a.map(item => {
+        return ktools.getType(item)
+      })
+      console.log(`新数据：`, ...b)
+      console.groupEnd(name)
+    },
+    //  时间格式化  *****************************************************************************************************************
+    fmtDate(name) {
       let a = new Date()
       console.group(name)
       console.log(`原始数据：`, a)
@@ -65,8 +78,8 @@ ktools.fmtDate("2018-12-21");`
       console.log(`新数据：`, b)
       console.groupEnd(name)
     },
-    //  深拷贝
-    fmtDeepCloneDemo(name) {
+    //  深拷贝  *****************************************************************************************************************
+    fmtDeepClone(name) {
       Mock.Random.cname()
       Mock.Random.email()
       Mock.Random.province()
@@ -127,11 +140,16 @@ ktools.fmtDate("2018-12-21");`
 }
 </script>
 <style lang="less" scoped>
-.borderStyle() {
+.baseWrapStyle() {
   border-radius: 5px;
   border: 5px solid #999;
+  background: beige;
 }
 
+.lightblue {
+  background: lightblue !important;
+  color: #fff !important;
+}
 h3 {
   height: 50px;
   line-height: 50px;
@@ -154,22 +172,22 @@ h3 {
     min-width: 1000px;
     display: flex;
     flex-grow: 1;
-    justify-content: space-around;
     .list-wrap {
       flex-grow: 1;
       width: 200px;
       overflow: auto;
       padding: 10px;
-      .borderStyle();
+      .baseWrapStyle();
       text-align: center;
       li {
         height: 30px;
       }
-      li:nth-child(even) {
-        background: #eaeaea;
-      }
+      // li:nth-child(even) {
+      //   background: #cdcdcd;
+      // }
       li:hover {
         background: lightblue;
+        color: #fff;
       }
     }
     .content-v {
@@ -183,7 +201,7 @@ h3 {
         height: 30%;
         div {
           flex-grow: 1;
-          .borderStyle();
+          .baseWrapStyle();
           padding: 10px 20px;
           overflow: auto;
         }
@@ -193,7 +211,7 @@ h3 {
         pre {
           font-family: Arial, Helvetica, sans-serif;
           flex-grow: 1;
-          .borderStyle();
+          .baseWrapStyle();
           overflow: auto;
           padding: 10px 20px;
         }
@@ -203,7 +221,8 @@ h3 {
       width: 200px;
     }
     .right {
-      width: 700px;
+      margin-left: 50px;
+      flex-grow: 1;
     }
   }
 }
