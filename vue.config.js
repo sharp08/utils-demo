@@ -1,6 +1,9 @@
 const webpack = require("webpack")
 module.exports = {
   lintOnSave: false,
+  devServer: {
+    port: 12323,    
+  },
   configureWebpack: config => {
     return {
       plugins: [
