@@ -25,7 +25,7 @@ const getType = (o) => {
 *            可以将A对应的值进行处理，再放到新对象的C属性上(C与A平级)
 * @return: 深拷贝后的新对象
 */
-const deepClone = (o, option) => {
+const fmtDeepClone = (o, option) => {
   let newObj;
   if (getType(o) === "Array") {
     newObj = []
@@ -39,7 +39,7 @@ const deepClone = (o, option) => {
   for (let name in o) {
     //  不传 option 参数时，直接克隆
     if (getType(option) === "Undefined") {
-      newObj[name] = deepClone(o[name], option)
+      newObj[name] = fmtDeepClone(o[name], option)
       continue;
     }
     //  标识 option 中指定的参数是否存在于拷贝源
@@ -51,7 +51,7 @@ const deepClone = (o, option) => {
         exist = true
         //  如果配置对象的某个属性值不是函数,则符合情况1
         if (getType(option[oldProp]) !== "Function") {
-          newObj[option[oldProp]] = deepClone(o[name], option)
+          newObj[option[oldProp]] = fmtDeepClone(o[name], option)
         }
         //  如果配置对象的某个值是函数,则符合情况2。将函数返回值与新对象合并
         else {
@@ -62,7 +62,7 @@ const deepClone = (o, option) => {
     }
     //  其他未在 option 中指定的属性则直接拷贝
     if (!exist) {
-      newObj[name] = deepClone(o[name], option)
+      newObj[name] = fmtDeepClone(o[name], option)
     }
   }
   return newObj
@@ -112,6 +112,6 @@ const fmtDate = (date, fmt = "yyyy-MM-dd HH:mm:ss", rtn = null) => {
 
 export {
   getType,// 查看类型
-  deepClone, // 深拷贝
+  fmtDeepClone, // 深拷贝并格式化
   fmtDate,  //  时间格式化
 }
