@@ -11,7 +11,7 @@
       <div class="content-v right">
         <div class="box">
           <h3>描述</h3>
-          <div>{{desc}}</div>
+          <pre>{{desc}}</pre>
         </div>
         <div class="box">
           <h3>调用</h3>
@@ -44,21 +44,70 @@ export default {
       this.curFnName = name;
       this[name](name);
     },
+    //  嵌套数组对象扁平化  *****************************************************************************************************************
+    tree2Flat(name) {
+      Mock.Random.cname();
+      Mock.Random.email();
+      Mock.Random.province();
+      Mock.Random.date();
+      let originData = Mock.mock([
+        {
+          name: "@cname",
+          birth: "@date",
+          location: "@province",
+          level: 0,
+          "children|2-5": [
+            {
+              name: "@cname",
+              birth: "@date",
+              location: "@province",
+              level: 1,
+              "children|0-2": [
+                {
+                  name: "@cname",
+                  birth: "@date",
+                  location: "@province",
+                  level: 2
+                }
+              ]
+            }
+          ]
+        }
+      ]);
+      this.desc = `ktools.tree2Flat(arr[,childKey[,delOldKey]]) 
+@param {Array} arr 嵌套关系数据
+@param {String} childKey 关系字段
+@param {Boolean} delOldKey 扁平后是否删除关系字段`;
+      this.dispatchStr = `//  先深拷贝一份
+let o = ktools.fmtDeepClone(originData);
+ktools.tree2Flat(o, "children");
+console.log(o);`;
+      console.group(name);
+      console.log(`原始数据：`, originData);
+      let o = ktools.fmtDeepClone(originData);
+      ktools.tree2Flat(o, "children");
+      console.log(`扁平后数据：`, o);
+      console.groupEnd(name);
+    },
     //  存储 localStorage  *****************************************************************************************************************
     setLocal() {
       this.desc = `见 setSession`;
+      this.dispatchStr = ``;
     },
     //  取出 localStorage  *****************************************************************************************************************
     getLocal() {
       this.desc = `见 getSession`;
+      this.dispatchStr = ``;
     },
     //  删除 localStorage  *****************************************************************************************************************
     removeLocal() {
       this.desc = `见 removeSession`;
+      this.dispatchStr = ``;
     },
     //  存储 sessionStorage  *****************************************************************************************************************
     setSession(name) {
       this.desc = `ktools.setSession(key,val)；如果 val 是 undefined 则存入 空字符串；可在控制台 Application - sessionStorage 中查看；`;
+      this.dispatchStr = ``;
       let a = [
         "strrr",
         1,
@@ -79,6 +128,7 @@ export default {
     //  取出 sessionStorage  *****************************************************************************************************************
     getSession(name) {
       this.desc = `ktools.getSession(key)；返回 Null,String 或 JSON 对象`;
+      this.dispatchStr = ``;
       console.group(name);
       let a = [
         "String",
@@ -98,6 +148,7 @@ export default {
     //  删除 / 清空 sessionStorage  *****************************************************************************************************************
     removeSession(name) {
       this.desc = `ktools.removeSession(key)；传参就删参数对应值，不传就清空`;
+      this.dispatchStr = ``;
       console.group(name);
       console.groupEnd(name);
     },
@@ -229,11 +280,11 @@ h3 {
       width: 200px;
       overflow: auto;
       padding: 10px;
-      cursor: pointer;
       .baseWrapStyle();
       text-align: center;
       li {
         height: 30px;
+        cursor: pointer;
       }
       // li:nth-child(even) {
       //   background: #cdcdcd;
@@ -252,7 +303,8 @@ h3 {
       }
       .box:first-child {
         height: 30%;
-        div {
+        pre {
+          font-family: Arial, Helvetica, sans-serif;
           flex-grow: 1;
           .baseWrapStyle();
           padding: 10px 20px;

@@ -191,7 +191,23 @@ const removeLocal = key => {
   }
 }
 
+/**
+ * @description: 嵌套数组对象扁平化(会修改原数组)
+ * @param {Array} arr 嵌套关系数据
+ * @param {String} childKey 关系字段
+ * @param {Boolean} delOldKey 扁平后是否删除关系字段
+ * @return: 扁平后的数据
+ */
 
+const tree2Flat = (arr, childKey = "children", delOldKey = true) => {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i][childKey]) {
+      arr.push(...arr[i][childKey])
+      if (delOldKey) delete arr[i][childKey]
+    }
+  }
+  return arr
+}
 
 export {
   getType,// 查看类型
@@ -203,4 +219,5 @@ export {
   setLocal,// 存储 localStorage
   getLocal,// 取出 localStorage
   removeLocal,//  删除 / 清空 localStorage
+  tree2Flat// 嵌套数组对象扁平化
 }
