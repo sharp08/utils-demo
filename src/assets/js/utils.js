@@ -208,6 +208,42 @@ const tree2Flat = (arr, childKey = "children", delOldKey = true) => {
   }
   return arr
 }
+/**
+ * @description: 扁平关系数据 => 嵌套数据(会修改原数组)
+ * @param {Array} data 数据源
+ * @param {String} id 关系 id
+ * @param {String} pId 关系 id
+ * @param {String} childKey 子数据存放的字段
+ * @param {any} root 跟数据 pId 标识
+ * @return: 嵌套数据
+ */
+//  root : 根节点 pId 标识
+const flat2Tree = (
+  data,
+  id = "id",
+  pId = "parentId",
+  childKey = "children",
+  root = 0
+) => {
+  //  第一次遍历
+  data.map(it => {
+    //  如果是 非根数据
+    if (it[pId] !== root) {
+      //  进行第二次遍历
+      data.map(obj => {
+        //  如果第二次遍历的 id 与 第一次遍历的 pId 相同，证明【第二次遍历的数据】是【第一次】的【父级】
+        if (obj[id] === it[pId]) {
+          if (!obj[childKey]) obj[childKey] = [];
+          obj[childKey].push(it);
+        }
+      });
+    }
+  });
+  //  过滤，只保存根节点数据
+  return data.filter(it => it[pId] === root);
+}
+
+
 
 export {
   getType,// 查看类型
@@ -219,5 +255,6 @@ export {
   setLocal,// 存储 localStorage
   getLocal,// 取出 localStorage
   removeLocal,//  删除 / 清空 localStorage
-  tree2Flat// 嵌套数组对象扁平化
+  tree2Flat,// 嵌套数组对象扁平化
+  flat2Tree,//  扁平关系数据 => 嵌套数据
 }

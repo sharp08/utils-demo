@@ -41,8 +41,35 @@ export default {
   mounted() {},
   methods: {
     click(name) {
+      console.clear();
       this.curFnName = name;
       this[name](name);
+    },
+    //  扁平关系数据 => 嵌套数据
+    flat2Tree(name) {
+      this.desc = `@description: 扁平关系数据 => 嵌套数据(会修改原数组)
+@param {Array} data 数据源
+@param {String} id 关系 id
+@param {String} pId 关系 id
+@param {String} childKey 子数据存放的字段
+@param {any} root 跟数据 pId 标识
+@return: 嵌套数据`;
+      this.dispatchStr = `ktools.flat2Tree(originData, "_id", "parentId");`;
+      let originData = [
+        { _id: 1, text: "1", parentId: 0 },
+        { _id: 2, text: "2", parentId: 0 },
+        { _id: 3, text: "1-3", parentId: 1 },
+        { _id: 4, text: "1-3-4", parentId: 3 },
+        { _id: 5, text: "2-5", parentId: 2 },
+        { _id: 6, text: "1-3-6", parentId: 3 }
+      ];
+      let a = ktools.fmtDeepClone(originData);
+
+      console.group(name);
+      console.log(`原始数据：`, originData);
+      a = ktools.flat2Tree(a, "_id", "parentId");
+      console.log(`新数据：`, a);
+      console.groupEnd(name);
     },
     //  嵌套数组对象扁平化  *****************************************************************************************************************
     tree2Flat(name) {
@@ -302,7 +329,7 @@ h3 {
         flex-direction: column;
       }
       .box:first-child {
-        height: 30%;
+        height: 50%;
         pre {
           font-family: Arial, Helvetica, sans-serif;
           flex-grow: 1;
