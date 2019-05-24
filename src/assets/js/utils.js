@@ -72,7 +72,7 @@ const fmtDeepClone = (o, option) => {
  * @param {String,Date} date  
  * @param {String} fmt 转换的格式
  * @param {any} 不传时间时返回值
- * @return: 
+ * @return: 格式化的时间 String
  */
 const fmtDate = (date, fmt = "yyyy-MM-dd HH:mm:ss", rtn = null) => {
   if (!date) return rtn
@@ -110,8 +110,97 @@ const fmtDate = (date, fmt = "yyyy-MM-dd HH:mm:ss", rtn = null) => {
   return fmt;
 }
 
+/**
+ * @description: 存储 sessionStorage 如果 value 是 undefined，则存入 空字符串
+ * @param {type} 
+ * @return: 
+ */
+const setSession = (key, value) => {
+  const type = getType(value);
+  if (["Array", "Object"].includes(type)) {
+    value = JSON.stringify(value)
+  } else if (type === "Undefined") {
+    value = ""
+  }
+  sessionStorage.setItem(key, value)
+}
+
+/**
+ * @description: 取出 sessionStorage
+ * @param {type} 
+ * @return: Null,Object,String
+ */
+const getSession = key => {
+  let r = sessionStorage.getItem(key)
+  try {
+    r = JSON.parse(r)
+  } catch (error) { }
+  return r
+}
+/**
+ * @description: 删除 / 清空 sessionStorage
+ * @param {any} 传哪个删哪个，不传清空
+ * @return: 
+ */
+const removeSession = key => {
+  if (getType(key) === "Undefined") {
+    sessionStorage.clear()
+  } else {
+    sessionStorage.removeItem(key)
+  }
+}
+
+
+/**
+ * @description: 存储 localStorage 如果 value 是 undefined，则存入 空字符串
+ * @param {type} 
+ * @return: 
+ */
+const setLocal = (key, value) => {
+  const type = getType(value);
+  if (["Array", "Object"].includes(type)) {
+    value = JSON.stringify(value)
+  } else if (type === "Undefined") {
+    value = ""
+  }
+  localStorage.setItem(key, value)
+}
+
+/**
+ * @description: 取出 localStorage
+ * @param {type} 
+ * @return: Null,Object,String
+ */
+const getLocal = key => {
+  let r = localStorage.getItem(key)
+  try {
+    r = JSON.parse(r)
+  } catch (error) { }
+  return r
+}
+/**
+ * @description: 删除 / 清空 localStorage
+ * @param {any} 传哪个删哪个，不传清空
+ * @return: 
+ */
+const removeLocal = key => {
+  if (getType(key) === "Undefined") {
+    localStorage.clear()
+  } else {
+    localStorage.removeItem(key)
+  }
+}
+
+
+
 export {
   getType,// 查看类型
   fmtDeepClone, // 深拷贝并格式化
   fmtDate,  //  时间格式化
+  setSession,// 存储 sessionStorage
+  getSession,// 取出 sessionStorage
+  removeSession,//  删除 / 清空 sessionStorage
+  setLocal,// 存储 localStorage
+  getLocal,// 取出 localStorage
+  removeLocal,//  删除 / 清空 localStorage
 }
